@@ -36,7 +36,7 @@ function fetchDiagramsOfFolder(id: string) {
   return fetchFrom(urls.diagramsOfFolder(id));
 }
 
-function fetchNodesOfDiagram(id: string) {
+export function fetchNodesOfDiagram(id: string) {
   return fetchFrom(urls.nodesOfDiagram(id));
 }
 

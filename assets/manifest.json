@@ -5,6 +5,6 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": ["cookies", "webRequest"],
+  "permissions": ["cookies", "webRequest", "activeTab"],
   "host_permissions": ["*://coggle.it/*"]
 }
