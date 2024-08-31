@@ -1,4 +1,4 @@
-import { fetchAllNodes, fetchNodesOfDiagram } from "./CoggleApi";
+import { fetchAllUserDiagrams, fetchNodesOfDiagram } from "./CoggleApi";
 import download from "./download";
 import generateBackupName from "./generateBackupName";
 
@@ -54,7 +54,7 @@ document.getElementById("backup-current")?.addEventListener("click", (e) => {
 
 document.getElementById("backup-all")?.addEventListener("click", (e) => {
   handleBackupButtonClick(e, async () => {
-    const nodes = await fetchAllNodes();
+    const nodes = await fetchAllUserDiagrams();
 
     alert("Количество загруженных диаграмм: " + nodes.length);
 

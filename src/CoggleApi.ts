@@ -12,35 +12,39 @@ const urls = (() => {
   };
 })();
 
-export async function fetchAllNodes() {
-  const folders = await fetchFolders();
+interface IEntity extends Record<string, any> {
+  _id: string;
+}
+
+export async function fetchAllUserDiagrams() {
+  const folders = await fetchAllUserFolders();
 
   const diagrams = (
-    await fetchAll(fetchDiagramsOfFolder, folders.map(getEntityId))
+    await Promise.all(
+      folders.map((node) => fetchDiagramsOfFolder(getEntityId(node)))
+    )
   ).flat();
 
   return (
-    await fetchAll(fetchNodesOfDiagram, diagrams.map(getEntityId))
+    await Promise.all(
+      diagrams.map((node) => fetchNodesOfDiagram(getEntityId(node)))
+    )
   ).flat();
 }
 
-function fetchAll<T, U>(fetcher: (a: T) => Promise<U>, items: T[]) {
-  return Promise.all(items.map(fetcher));
-}
-
-function fetchFolders() {
-  return fetchFrom(urls.folders);
+function fetchAllUserFolders() {
+  return fetchEntities(urls.folders);
 }
 
 function fetchDiagramsOfFolder(id: string) {
-  return fetchFrom(urls.diagramsOfFolder(id));
+  return fetchEntities(urls.diagramsOfFolder(id));
 }
 
 export function fetchNodesOfDiagram(id: string) {
-  return fetchFrom(urls.nodesOfDiagram(id));
+  return fetchEntities(urls.nodesOfDiagram(id));
 }
 
-function fetchFrom(url: string) {
+function fetchEntities(url: string): Promise<IEntity[]> {
   const options = { credentials: "include" } as const;
 
   return fetch(url, options)
@@ -48,11 +52,11 @@ function fetchFrom(url: string) {
     .catch(() => alert("Ошибка по пути: " + url));
 }
 
-function getEntityId(node: Record<string, string>): string {
+function getEntityId(entity: IEntity): string {
   const key = "_id";
 
-  if (key in node) {
-    return String(node[key]);
+  if (key in entity) {
+    return String(entity[key]);
   }
 
   throw new Error(`В сущности не найдено поле ${key}`);
